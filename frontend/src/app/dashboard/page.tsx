@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/Button';
 import { useTasks } from '@/features/tasks/hooks/useTasks';
 import { useTaskInsights } from '@/features/tasks/hooks/useTasks';
 import Link from 'next/link';
+import { ROUTES } from '@/lib/constants';
 
 const StatCard: React.FC<{
   title: string;
@@ -152,39 +153,42 @@ export default function DashboardPage() {
             <h3 className="text-lg font-semibold text-gray-900">
               Upcoming Deadlines
             </h3>
-            {/* <Link href="/tasks">
+            <Link href={ROUTES.TASKS}>
               <Button variant="ghost" size="sm">
                 View all
               </Button>
-            </Link> */}
+            </Link>
           </div>
           <div className="space-y-3">
-            {data?.upcomingDeadlines?.slice(0, 3).map((task) => (
-              <div
-                key={task._id}
-                className="flex items-center justify-between p-2 bg-gray-50 rounded-lg"
-              >
-                <div>
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    {task.title}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {new Date(task.dueDate).toLocaleDateString()}
-                  </p>
-                </div>
-                <Badge
-                  variant={
-                    task.priority === 'high'
-                      ? 'danger'
-                      : task.priority === 'medium'
-                      ? 'warning'
-                      : 'default'
-                  }
+            {Array.isArray(data?.upcomingDeadlines) &&
+            data.upcomingDeadlines.length > 0 ? (
+              data?.upcomingDeadlines?.slice(0, 3).map((task) => (
+                <div
+                  key={task._id}
+                  className="flex items-center justify-between p-2 bg-gray-50 rounded-lg"
                 >
-                  {task.priority}
-                </Badge>
-              </div>
-            )) || (
+                  <div>
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {task.title}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {new Date(task.dueDate).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <Badge
+                    variant={
+                      task.priority === 'high'
+                        ? 'danger'
+                        : task.priority === 'medium'
+                        ? 'warning'
+                        : 'default'
+                    }
+                  >
+                    {task.priority}
+                  </Badge>
+                </div>
+              ))
+            ) : (
               <p className="text-sm text-gray-500 text-center py-4">
                 No upcoming deadlines
               </p>
@@ -197,11 +201,11 @@ export default function DashboardPage() {
       <Card className="mt-8">
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-lg font-semibold text-gray-900">Recent Tasks</h3>
-          {/* <Link href="/tasks">
+          <Link href={ROUTES.TASKS}>
             <Button variant="ghost" size="sm">
               View all tasks
             </Button>
-          </Link> */}
+          </Link>
         </div>
         <div className="space-y-3">
           {tasks.slice(0, 5).map((task) => (
@@ -251,7 +255,7 @@ export default function DashboardPage() {
               <p className="text-gray-500 mb-4">
                 No tasks yet. Create your first task!
               </p>
-              <Link href="/tasks">
+              <Link href={ROUTES.TASKS}>
                 <Button>Create Task</Button>
               </Link>
             </div>

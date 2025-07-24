@@ -3,9 +3,6 @@ import {
   TasksResponse,
   TaskResponse,
   CreateTaskData,
-  UpdateTaskData,
-  TaskStatus,
-  Priority,
   InsightsResponse,
 } from '@/types';
 

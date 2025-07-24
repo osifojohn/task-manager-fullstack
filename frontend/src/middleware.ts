@@ -14,8 +14,6 @@ export type JWTPayload = {
 
 const AUTH_ROUTES = [ROUTES.AUTH.LOGIN, ROUTES.AUTH.SIGNUP];
 
-const PUBLIC_ROUTES = [ROUTES.HOME];
-
 const IGNORE_ROUTES = [
   '/_next/static',
   '/_next/image',
@@ -32,8 +30,6 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const token = request.cookies.get(STORAGE_KEYS.USER_ACCESS_TOKEN)?.value;
 
-  console.log('token ', token);
-
   // static files and internal routes
   if (
     pathname.startsWith('/public/') ||
@@ -43,15 +39,13 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  //public routes (always accessible)
-  if (PUBLIC_ROUTES.some((route) => pathname === route)) {
-    if (token && isTokenValid(token)) {
-      return NextResponse.redirect(new URL(ROUTES.DASHBOARD, request.url));
+  if (PROTECTED_ROUTES.some((route) => pathname.startsWith(route))) {
+    if (!token || !isTokenValid(token)) {
+      return NextResponse.redirect(new URL(ROUTES.AUTH.LOGIN, request.url));
     }
-    return NextResponse.redirect(new URL(ROUTES.HOME, request.url));
+    return NextResponse.next();
   }
 
-  // authentication routes
   if (AUTH_ROUTES.some((route) => pathname.startsWith(route))) {
     if (token && isTokenValid(token)) {
       return NextResponse.redirect(new URL(ROUTES.DASHBOARD, request.url));
@@ -59,14 +53,8 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  //protected routes
-  if (PROTECTED_ROUTES.some((route) => pathname.startsWith(route))) {
-    console.log('routes ', token);
-    if (!token || !isTokenValid(token)) {
-      return NextResponse.redirect(new URL(ROUTES.AUTH.LOGIN, request.url));
-    }
-
-    return NextResponse.next();
+  if (token && isTokenValid(token)) {
+    return NextResponse.redirect(new URL(ROUTES.DASHBOARD, request.url));
   }
 
   return NextResponse.next();

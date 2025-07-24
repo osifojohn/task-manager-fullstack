@@ -147,8 +147,9 @@ export default function AnalyticsPage() {
             Upcoming Deadlines
           </h3>
           <div className="space-y-3">
-            {data?.upcomingDeadlines?.length > 0 ? (
-              data.upcomingDeadlines.map((task) => (
+            {Array.isArray(data?.upcomingDeadlines) &&
+            data.upcomingDeadlines.length > 0 ? (
+              (data?.upcomingDeadlines).map((task) => (
                 <div
                   key={task._id}
                   className="flex items-center justify-between p-3 border border-gray-200 rounded-lg"
@@ -189,7 +190,7 @@ export default function AnalyticsPage() {
                 </div>
               ))
             ) : (
-              <p className="text-center text-gray-500 py-4">
+              <p className="text-center  text-gray-500 py-4">
                 No upcoming deadlines
               </p>
             )}
