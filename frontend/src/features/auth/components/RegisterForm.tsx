@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Card } from '@/components/ui/Card';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { ROUTES } from '@/lib/constants';
 
 export const RegisterForm: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -58,13 +59,23 @@ export const RegisterForm: React.FC = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-purple-100 px-4 py-12">
       <div className="max-w-md w-full">
+        {/* Friendly Render Notice */}
+        <div className="bg-yellow-50 border-l-4 mb-4 border-yellow-400 text-yellow-800 p-3 rounded text-sm">
+          💡 <span className="font-medium">Please note:</span> I hosted the
+          backend on Render, so it might take a few seconds to wake up when you
+          first create an account. Thanks for your patience!
+        </div>
+
         <div className="mb-8 text-center">
           <h2 className="text-4xl font-extrabold text-gray-800">
             Create Account
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             Already have an account?{' '}
-            <Link href="/auth/login" className="text-blue-600 hover:underline">
+            <Link
+              href={ROUTES.AUTH.LOGIN}
+              className="text-blue-600 hover:underline"
+            >
               Sign in here
             </Link>
           </p>
