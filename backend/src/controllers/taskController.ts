@@ -110,9 +110,14 @@ export const createTask = async (req: AuthRequest, res: Response) => {
 
 export const updateTask = async (req: AuthRequest, res: Response) => {
   try {
+    // Undefined values removed to prevent overwriting with undefined
+    const updateData = Object.fromEntries(
+      Object.entries(req.body).filter(([_, value]) => value !== undefined)
+    );
+
     const task = await Task.findOneAndUpdate(
       { _id: req.params.id, userId: req.user!._id },
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     );
 
