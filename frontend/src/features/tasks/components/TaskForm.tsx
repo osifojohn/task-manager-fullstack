@@ -48,7 +48,6 @@ export const TaskForm: React.FC<TaskFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Basic validation
     const newErrors: Record<string, string> = {};
     if (!formData.title.trim()) {
       newErrors.title = 'Title is required';

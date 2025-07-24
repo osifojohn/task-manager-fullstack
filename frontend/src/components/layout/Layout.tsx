@@ -28,7 +28,10 @@ export const Layout: React.FC<LayoutProps> = ({ children }) => {
         <div className="flex-1 flex flex-col w-full">
           {/* Mobile Header with toggle */}
           <header className="md:hidden flex items-center justify-between p-4 border-b z-30 relative bg-white">
-            <button onClick={() => setSidebarOpen(true)} className="text-2xl">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="text-2xl cursor-pointer"
+            >
               ☰
             </button>
             <h1 className="text-lg font-semibold">TaskFlow</h1>

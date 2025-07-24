@@ -5,11 +5,12 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { cn } from '@/lib/utils';
+import { LayoutDashboard, CheckSquare, BarChart3 } from 'lucide-react';
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', icon: '📊' },
-  { name: 'Tasks', href: '/tasks', icon: '📋' },
-  { name: 'Analytics', href: '/analytics', icon: '📈' },
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Tasks', href: '/tasks', icon: CheckSquare },
+  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
 ];
 
 interface SidebarProps {
@@ -30,28 +31,42 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
       )}
     >
       <div>
-        {' '}
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold">TaskFlow</h2>
           {/* Close button (visible only on small screens) */}
-          <button onClick={onClose} className="text-2xl  md:hidden">
+          <button
+            onClick={onClose}
+            className="text-2xl cursor-pointer md:hidden"
+          >
             &times;
           </button>
         </div>
         <nav className="space-y-2">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                'flex items-center gap-2 p-2 rounded hover:bg-gray-100',
-                pathname === item.href ? 'bg-gray-100 font-semibold' : ''
-              )}
-            >
-              <span>{item.icon}</span>
-              <span>{item.name}</span>
-            </Link>
-          ))}
+          {navigation.map((item) => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  'flex items-center gap-2 p-2 rounded transition-colors duration-200 group',
+                  isActive ? 'bg-gray-100 font-semibold' : 'hover:bg-gray-100'
+                )}
+                onClick={onClose}
+              >
+                <Icon
+                  className={cn(
+                    'w-5 h-5 transition-transform duration-200 group-hover:scale-110',
+                    isActive
+                      ? 'text-blue-600'
+                      : 'text-gray-600 group-hover:text-blue-500'
+                  )}
+                />
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
         </nav>
       </div>
 

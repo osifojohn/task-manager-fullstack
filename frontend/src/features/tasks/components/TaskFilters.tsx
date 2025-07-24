@@ -3,18 +3,18 @@
 import React from 'react';
 import { TaskStatus, Priority } from '@/types';
 import { Select } from '@/components/ui/Select';
-import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
+interface Filters {
+  status: TaskStatus | '';
+  priority: Priority | '';
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+}
+
 interface TaskFiltersProps {
-  filters: {
-    status: TaskStatus | '';
-    priority: Priority | '';
-    search: string;
-    sortBy: string;
-    sortOrder: 'asc' | 'desc';
-  };
-  onFiltersChange: (filters: any) => void;
+  filters: Filters;
+  onFiltersChange: (filters: Filters) => void;
   onReset: () => void;
 }
 
@@ -44,19 +44,13 @@ export const TaskFilters: React.FC<TaskFiltersProps> = ({
   onFiltersChange,
   onReset,
 }) => {
-  const handleFilterChange = (field: string, value: string) => {
+  const handleFilterChange = (field: keyof Filters, value: string) => {
     onFiltersChange({ ...filters, [field]: value });
   };
 
   return (
     <div className="bg-white p-4 rounded-lg border border-gray-200 mb-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <Input
-          placeholder="Search tasks..."
-          value={filters.search}
-          onChange={(e) => handleFilterChange('search', e.target.value)}
-        />
-
         <Select
           value={filters.status}
           onChange={(e) => handleFilterChange('status', e.target.value)}

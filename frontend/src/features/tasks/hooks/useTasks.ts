@@ -76,8 +76,9 @@ export const useTasks = (params: UseTasksParams = {}) => {
     tasks: tasksData?.data?.tasks || [],
     pagination: tasksData?.data?.pagination,
 
-    // Loading states
+    // Loading state
     isLoading,
+    // error state
     error,
 
     // Actions

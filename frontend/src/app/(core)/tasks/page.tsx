@@ -1,12 +1,12 @@
 'use client';
 import React, { useState, useMemo } from 'react';
-import { Layout } from '@/components/layout/Layout';
 import { Header } from '@/components/layout/Header';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { TaskCard } from '@/features/tasks/components/TaskCard';
 import { TaskForm } from '@/features/tasks/components/TaskForm';
 import { TaskFilters } from '@/features/tasks/components/TaskFilters';
+import { ErrorFallback } from '@/components/ui/ErrorFallback';
 
 import { useTasks } from '@/features/tasks/hooks/useTasks';
 import { TaskStatus, Priority, CreateTaskData } from '@/types';
@@ -14,12 +14,20 @@ import { Pagination } from '@/components/ui/Pagination';
 
 import { FileWarning } from 'lucide-react';
 
+interface TaskQueryParams {
+  status?: TaskStatus;
+  priority?: Priority;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+  page: number;
+  limit: number;
+}
+
 export default function TasksPage() {
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [filters, setFilters] = useState({
     status: '' as TaskStatus | '',
     priority: '' as Priority | '',
-    search: '',
     sortBy: 'createdAt',
     sortOrder: 'desc' as 'asc' | 'desc',
     page: 1,
@@ -29,8 +37,7 @@ export default function TasksPage() {
 
   // Prepare query parameters
   const queryParams = useMemo(() => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const params: any = {
+    const params: TaskQueryParams = {
       sortBy: filters.sortBy,
       sortOrder: filters.sortOrder,
       page: filters.page,
@@ -39,17 +46,27 @@ export default function TasksPage() {
 
     if (filters.status) params.status = filters.status;
     if (filters.priority) params.priority = filters.priority;
-    if (filters.search) params.search = filters.search;
 
     return params;
   }, [filters]);
 
-  const { tasks, pagination, isLoading, createTask, isCreating } =
-    useTasks(queryParams);
+  const {
+    tasks,
+    pagination,
+    isLoading,
+    createTask,
+    isCreating,
+    error,
+    refetch,
+  } = useTasks(queryParams);
 
-  const handleCreateTask = (data: CreateTaskData) => {
-    createTask(data);
-    setShowCreateForm(false);
+  const handleCreateTask = async (data: CreateTaskData) => {
+    try {
+      createTask(data);
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error('Failed to create task:', error);
+    }
   };
 
   const handleFiltersChange = (newFilters: Partial<typeof filters>) => {
@@ -64,7 +81,6 @@ export default function TasksPage() {
     setFilters({
       status: '',
       priority: '',
-      search: '',
       sortBy: 'createdAt',
       sortOrder: 'desc',
       page: 1,
@@ -82,22 +98,44 @@ export default function TasksPage() {
     setFilters((prev) => ({
       ...prev,
       limit,
-      page: 1, // Reset to first page when limit changes
+      page: 1,
     }));
   };
 
+  const handleRetry = () => {
+    refetch();
+  };
+
+  if (error) {
+    return (
+      <>
+        <Header title="Tasks" subtitle="Error loading tasks" />
+        <div className="h-[50%] flex flex-col items-center justify-center">
+          <Card className="max-w-md w-full">
+            <ErrorFallback
+              error={error}
+              onRetry={handleRetry}
+              title="Failed to load tasks"
+            />
+          </Card>
+        </div>
+      </>
+    );
+  }
+
   if (isLoading) {
     return (
-      <Layout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+      <>
+        <Header title="Tasks" subtitle="Loading..." />
+        <div className="h-[50%] flex flex-col items-center justify-center">
+          <div className="animate-spin  h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
         </div>
-      </Layout>
+      </>
     );
   }
 
   return (
-    <Layout>
+    <>
       <Header
         title="Tasks"
         subtitle={`${pagination?.total} task${
@@ -172,6 +210,6 @@ export default function TasksPage() {
           )}
         </>
       )}
-    </Layout>
+    </>
   );
 }

@@ -1,5 +1,13 @@
+'use client';
+
 import React from 'react';
 import { Button } from './Button';
+import {
+  ChevronsLeft,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsRight,
+} from 'lucide-react';
 
 interface PaginationProps {
   currentPage: number;
@@ -76,9 +84,9 @@ export const Pagination: React.FC<PaginationProps> = ({
   const NavButton: React.FC<{
     onClick: () => void;
     disabled: boolean;
-    children: React.ReactNode;
+    icon: React.ReactNode;
     ariaLabel: string;
-  }> = ({ onClick, disabled, children, ariaLabel }) => (
+  }> = ({ onClick, disabled, icon, ariaLabel }) => (
     <Button
       variant="outline"
       size="sm"
@@ -87,7 +95,7 @@ export const Pagination: React.FC<PaginationProps> = ({
       className="h-10 px-3"
       aria-label={ariaLabel}
     >
-      {children}
+      {icon}
     </Button>
   );
 
@@ -145,41 +153,15 @@ export const Pagination: React.FC<PaginationProps> = ({
               onClick={() => handlePageClick(1)}
               disabled={currentPage === 1}
               ariaLabel="Go to first page"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-                />
-              </svg>
-            </NavButton>
+              icon={<ChevronsLeft className="w-4 h-4" />}
+            />
 
             <NavButton
               onClick={() => handlePageClick(currentPage - 1)}
               disabled={currentPage === 1}
               ariaLabel="Go to previous page"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </NavButton>
+              icon={<ChevronLeft className="w-4 h-4" />}
+            />
 
             {/* Page Numbers */}
             {visiblePages[0] > 1 && (
@@ -213,41 +195,15 @@ export const Pagination: React.FC<PaginationProps> = ({
               onClick={() => handlePageClick(currentPage + 1)}
               disabled={currentPage === totalPages}
               ariaLabel="Go to next page"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </NavButton>
+              icon={<ChevronRight className="w-4 h-4" />}
+            />
 
             <NavButton
               onClick={() => handlePageClick(totalPages)}
               disabled={currentPage === totalPages}
               ariaLabel="Go to last page"
-            >
-              <svg
-                className="w-4 h-4"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 5l7 7-7 7M5 5l7 7-7 7"
-                />
-              </svg>
-            </NavButton>
+              icon={<ChevronsRight className="w-4 h-4" />}
+            />
           </div>
         </div>
       )}

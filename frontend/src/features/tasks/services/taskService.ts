@@ -18,7 +18,9 @@ interface UseTasksParams {
 
 export const taskService = {
   getTasks: async (params: UseTasksParams = {}): Promise<TasksResponse> => {
-    const response = await apiClient.get<TasksResponse>('/tasks', { params });
+    const response = await apiClient.get<TasksResponse>('/tasks', {
+      params,
+    });
     return response.data;
   },
 
