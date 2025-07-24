@@ -24,36 +24,38 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
   return (
     <aside
       className={cn(
-        'fixed inset-y-0 left-0 z-50 w-64 bg-white border-r p-4 transition-transform duration-300 transform',
+        'fixed inset-y-0 left-0 z-50 w-64 bg-white border-r p-4 transition-transform duration-300 transform flex flex-col justify-between',
         isOpen ? 'translate-x-0' : '-translate-x-full',
-        'md:translate-x-0 md:static md:block'
+        'md:translate-x-0 md:static md:flex'
       )}
     >
-      {/* Close button (visible only on small screens) */}
-      <div className="flex justify-between items-center mb-6 md:hidden">
-        <h2 className="text-xl font-bold">TaskFlow</h2>
-        <button onClick={onClose} className="text-2xl">
-          &times;
-        </button>
+      <div>
+        {' '}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-bold">TaskFlow</h2>
+          {/* Close button (visible only on small screens) */}
+          <button onClick={onClose} className="text-2xl  md:hidden">
+            &times;
+          </button>
+        </div>
+        <nav className="space-y-2">
+          {navigation.map((item) => (
+            <Link
+              key={item.name}
+              href={item.href}
+              className={cn(
+                'flex items-center gap-2 p-2 rounded hover:bg-gray-100',
+                pathname === item.href ? 'bg-gray-100 font-semibold' : ''
+              )}
+            >
+              <span>{item.icon}</span>
+              <span>{item.name}</span>
+            </Link>
+          ))}
+        </nav>
       </div>
 
-      <nav className="space-y-2">
-        {navigation.map((item) => (
-          <Link
-            key={item.name}
-            href={item.href}
-            className={cn(
-              'flex items-center gap-2 p-2 rounded hover:bg-gray-100',
-              pathname === item.href ? 'bg-gray-100 font-semibold' : ''
-            )}
-          >
-            <span>{item.icon}</span>
-            <span>{item.name}</span>
-          </Link>
-        ))}
-      </nav>
-
-      <div className="mt-10 border-t pt-4">
+      <div className="border-t pt-4 mt-auto">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center text-lg font-bold">
             {user?.name?.charAt(0).toUpperCase()}
@@ -66,7 +68,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
 
         <button
           onClick={logout}
-          className="mt-4 text-red-500 hover:underline block"
+          className="mt-4 text-red-500 cursor-pointer hover:underline block"
         >
           Sign out
         </button>

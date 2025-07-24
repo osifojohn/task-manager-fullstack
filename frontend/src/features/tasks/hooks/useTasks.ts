@@ -1,17 +1,18 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { taskService } from '../services/taskService';
-import { CreateTaskData, TaskStatus, Priority } from '@/types';
+import { ApiError, CreateTaskData } from '@/types';
 import { toast } from 'sonner';
+import { AxiosError } from 'axios';
 
 interface UseTasksParams {
-  status?: TaskStatus;
-  priority?: Priority;
+  status?: string;
+  priority?: string;
+  search?: string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;
 }
-
 export const useTasks = (params: UseTasksParams = {}) => {
   const queryClient = useQueryClient();
 
@@ -24,6 +25,13 @@ export const useTasks = (params: UseTasksParams = {}) => {
     queryKey: ['tasks', params],
     queryFn: () => taskService.getTasks(params),
     staleTime: 30 * 1000, // 30 seconds
+    gcTime: 5 * 60 * 1000, // 5 minutes
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
+
+    placeholderData: (previousData) => previousData,
   });
 
   const createTaskMutation = useMutation({
@@ -33,7 +41,7 @@ export const useTasks = (params: UseTasksParams = {}) => {
       queryClient.invalidateQueries({ queryKey: ['task-insights'] });
       toast.success('Task created successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiError>) => {
       toast.error(error.response?.data?.message || 'Failed to create task');
     },
   });
@@ -46,7 +54,7 @@ export const useTasks = (params: UseTasksParams = {}) => {
       queryClient.invalidateQueries({ queryKey: ['task-insights'] });
       toast.success('Task updated successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiError>) => {
       toast.error(error.response?.data?.message || 'Failed to update task');
     },
   });
@@ -58,7 +66,7 @@ export const useTasks = (params: UseTasksParams = {}) => {
       queryClient.invalidateQueries({ queryKey: ['task-insights'] });
       toast.success('Task deleted successfully!');
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiError>) => {
       toast.error(error.response?.data?.message || 'Failed to delete task');
     },
   });

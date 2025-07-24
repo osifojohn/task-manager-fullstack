@@ -9,9 +9,10 @@ import {
   InsightsResponse,
 } from '@/types';
 
-interface GetTasksParams {
-  status?: TaskStatus;
-  priority?: Priority;
+interface UseTasksParams {
+  status?: string;
+  priority?: string;
+  search?: string;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
   page?: number;
@@ -19,7 +20,7 @@ interface GetTasksParams {
 }
 
 export const taskService = {
-  getTasks: async (params: GetTasksParams = {}): Promise<TasksResponse> => {
+  getTasks: async (params: UseTasksParams = {}): Promise<TasksResponse> => {
     const response = await apiClient.get<TasksResponse>('/tasks', { params });
     return response.data;
   },
