@@ -2,6 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { authService } from '../services/authService';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';
+import { AxiosError } from 'axios';
+import { ApiError } from '@/types';
+import { ROUTES } from '@/lib/constants';
 
 export const useAuth = () => {
   const queryClient = useQueryClient();
@@ -24,9 +27,9 @@ export const useAuth = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(['user'], data);
       toast.success('Account created successfully!');
-      router.push('/dashboard');
+      router.push(ROUTES.DASHBOARD);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiError>) => {
       toast.error(error.response?.data?.message || 'Registration failed');
     },
   });
@@ -36,9 +39,9 @@ export const useAuth = () => {
     onSuccess: (data) => {
       queryClient.setQueryData(['user'], data);
       toast.success('Logged in successfully!');
-      router.push('/dashboard');
+      router.push(ROUTES.DASHBOARD);
     },
-    onError: (error: any) => {
+    onError: (error: AxiosError<ApiError>) => {
       toast.error(error.response?.data?.message || 'Login failed');
     },
   });
@@ -49,7 +52,7 @@ export const useAuth = () => {
     queryClient.removeQueries({ queryKey: ['tasks'] });
     queryClient.removeQueries({ queryKey: ['task-insights'] });
     toast.success('Logged out successfully');
-    router.push('/auth/login');
+    router.push(ROUTES.AUTH.LOGIN);
   };
 
   return {
