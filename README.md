@@ -4,6 +4,16 @@ A **task management application** built with **Next.js 15 (App Router)** **TypeS
 
 ---
 
+## 🌐 Live Demo
+
+👉 **Check out the live app here:** [https://task-manager-gules-delta.vercel.app](https://task-manager-gules-delta.vercel.app)
+
+> _Note: The backend is hosted on Render, so the initial load may take a few seconds._
+
+---
+
+---
+
 ## Features
 
 - **Authentication**
